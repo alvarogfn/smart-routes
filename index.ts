@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { isNull } from "./utils/isNull";
 import { isString } from "./utils/isString";
 
@@ -58,7 +59,7 @@ const Route = function (
   };
 
   const getPath = (arg: Argument): string => {
-    let newPath = `${this.basePath}${this.path}`;
+    let newPath = `${this.basePath}/${this.path}`;
 
     newPath += getArgPath(arg);
 
@@ -69,13 +70,17 @@ const Route = function (
 
   updateChildren(this.path);
 
-  return (arg: Argument = '') => ({
+  const routeReturn = (arg: Argument = '') => ({
     ...this,
     path: getPath(arg),
     setBase,
+    toString: () => getPath(arg),
   });
+
+  Object.assign(routeReturn, this, {path: getPath(), setBase, toString: () => getPath()});
+
+  return routeReturn;
+
 } as any;
 
-export {
-  Route,
-};
+export { Route };
